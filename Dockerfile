@@ -9,7 +9,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-# Tell Maven to compile the code into a .jar file (skipping tests to be fast)
+# Tell Maven to compile the cde into a .jar file (skipping tests to be fast)
 RUN mvn clean package -DskipTests
 
 # ==========================================
