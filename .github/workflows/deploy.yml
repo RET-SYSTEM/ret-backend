@@ -15,14 +15,19 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # 1. Go to the project root
-            cd /home/cbhud/ret-app
+            # 1. Enter the backend directory
+            cd /home/cbhud/ret-app/ret-backend
             
-            # 2. Update the backend code specifically
-            cd ret-backend
-            git pull origin main
+            # 2. Force the local code to match GitHub exactly
+            # This deletes any manual edits on the VPS that were blocking the pull
+            git fetch origin main
+            git reset --hard origin/main
+            
+            # 3. Go back to the root to run Docker Compose
             cd ..
             
-            # 3. Rebuild ONLY the backend service
+            # 4. Rebuild ONLY the backend service
             docker compose up -d --build backend
+            
+            # 5. Clean up unused images to save disk space
             docker image prune -f
