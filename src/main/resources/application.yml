@@ -25,4 +25,4 @@ server:
 
 # Python worker microservice
 worker:
-  base-url: http://localhost:${PYTHON_WORKER_PORT:3501}
+  base-url: http://worker:${PYTHON_WORKER_PORT:3501}
