@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
+import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.format.TextStyle;
@@ -203,6 +204,7 @@ public class InvoiceServiceImpl implements InvoiceService {
             item.setCategory(category);
         }
 
+        recalculateTotal(invoice);
         invoiceRepository.save(invoice);
         log.info("Updated item id={} on invoice id={}", itemId, invoiceId);
         return invoiceMapper.toResponse(invoice);
@@ -220,6 +222,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                     "Item with id " + itemId + " not found on invoice " + invoiceId + ".");
         }
 
+        recalculateTotal(invoice);
         invoiceRepository.save(invoice);
         log.info("Deleted item id={} from invoice id={}", itemId, invoiceId);
         return invoiceMapper.toResponse(invoice);
@@ -228,6 +231,19 @@ public class InvoiceServiceImpl implements InvoiceService {
     // ══════════════════════════════════════════════════════════════════
     //  PRIVATE HELPERS
     // ══════════════════════════════════════════════════════════════════
+
+    /** Recalculates the totalAmount based on all items currently attached to the invoice. */
+    private void recalculateTotal(Invoice invoice) {
+        BigDecimal newTotal = invoice.getItems().stream()
+                .map(item -> {
+                    BigDecimal price = item.getPrice() != null ? item.getPrice() : BigDecimal.ZERO;
+                    BigDecimal qty = item.getQuantity() != null ? item.getQuantity() : BigDecimal.ONE;
+                    return price.multiply(qty);
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        invoice.setTotalAmount(newTotal);
+        log.debug("Recalculated total for invoice id={} to {}", invoice.getId(), newTotal);
+    }
 
     /** Build a lowercase-keyed map of all categories for fast lookup. */
     private Map<String, Category> buildCategoryMap() {
