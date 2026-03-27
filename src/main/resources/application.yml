@@ -26,3 +26,8 @@ server:
 # Python worker microservice
 worker:
   base-url: http://worker:${PYTHON_WORKER_PORT:3501}
+  api-key: ${INTERNAL_API_KEY:dev-internal-key}
+
+# API security for mobile app
+mobile:
+  api-key: ${MOBILE_API_KEY:dev-mobile-key}

@@ -233,3 +233,5 @@ config/              CORS, RestClient bean
 | `DB_PASSWORD` | — | DB password |
 | `SPRING_PORT` | `8080` | Server port |
 | `PYTHON_WORKER_URL` | `http://localhost:5000` | Python worker base URL |
+| `INTERNAL_API_KEY` | `dev-internal-key` | Security key shared between Spring Boot and Python worker |
+| `MOBILE_API_KEY` | `dev-mobile-key` | Security key required from Mobile App for all `/api/` endpoints |
