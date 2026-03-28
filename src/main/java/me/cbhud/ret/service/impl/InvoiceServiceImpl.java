@@ -267,6 +267,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .storeName(request.getStoreName())
                 .totalAmount(request.getTotalAmount())
                 .isCard(request.getIsCard())
+                .dateTime(java.time.LocalDateTime.now())
                 .build();
 
         for (ManualItemRequest mi : request.getItems()) {
